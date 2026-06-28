@@ -32,6 +32,7 @@ export default function App() {
           recordStars(gameId, stars)
           setScreen({ name: 'result', gameId, stars, correct, total })
         }}
+        onExit={() => setScreen({ name: 'home' })}
       />
     )
   }

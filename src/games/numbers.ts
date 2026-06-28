@@ -1,7 +1,6 @@
 import type { GameDefinition, Choice } from '../types'
 import { randInt, pickDistinct, shuffle } from '../lib/random'
-
-const WORDS = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN']
+import { NUMBER_WORDS, numberWord } from './words'
 
 export const numbersGame: GameDefinition = {
   id: 'numbers',
@@ -9,8 +8,8 @@ export const numbersGame: GameDefinition = {
   icon: '🔢',
   generateQuestion() {
     const value = randInt(1, 10)
-    const correctWord = WORDS[value - 1]
-    const distractors = pickDistinct(WORDS, 3, [correctWord])
+    const correctWord = numberWord(value)
+    const distractors = pickDistinct(NUMBER_WORDS, 3, [correctWord])
     const choices: Choice[] = shuffle([
       { id: correctWord, label: correctWord, correct: true },
       ...distractors.map((w) => ({ id: w, label: w, correct: false })),

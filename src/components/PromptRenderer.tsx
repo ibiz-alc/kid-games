@@ -18,5 +18,15 @@ export function PromptRenderer({ prompt }: { prompt: Prompt }) {
           {prompt.a} + {prompt.b} = ?
         </div>
       )
+    case 'picture':
+      return (
+        <div className="prompt-picture" aria-label={`${prompt.count}`}>
+          {Array.from({ length: prompt.count }, (_, i) => (
+            <span key={i} className="prompt-picture-item">
+              {prompt.emoji}
+            </span>
+          ))}
+        </div>
+      )
   }
 }

@@ -4,6 +4,9 @@ export type Prompt =
   | { kind: 'number'; value: number }
   | { kind: 'color'; hex: string; name: string }
   | { kind: 'math'; a: number; b: number }
+  | { kind: 'picture'; count: number; emoji: string }
+
+export type AnswerMode = 'buttons' | 'wordbank'
 
 export type Question = {
   prompt: Prompt
@@ -16,4 +19,6 @@ export type GameDefinition = {
   title: string
   icon: string
   generateQuestion: () => Question
+  /** How the answer choices are presented. Defaults to 'buttons'. */
+  answerMode?: AnswerMode
 }
