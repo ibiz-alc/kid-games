@@ -341,3 +341,94 @@ button {
   color: var(--ink);
   box-shadow: var(--shadow);
 }
+
+/* ---------- Spelling game ---------- */
+.picker-title {
+  flex: 1;
+  margin: 0;
+  font-size: clamp(22px, 5vw, 34px);
+}
+.spell-prompt-emoji {
+  font-size: clamp(90px, 26vw, 150px);
+  line-height: 1.1;
+  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.15));
+  animation: pop-in 0.3s ease;
+}
+.slot-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 28px 0;
+}
+.spell-slot {
+  width: clamp(48px, 13vw, 68px);
+  height: clamp(58px, 16vw, 82px);
+  font-family: 'Baloo 2', sans-serif;
+  font-size: clamp(28px, 8vw, 40px);
+  font-weight: 800;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.6);
+  border: 4px dashed var(--accent-2);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+.spell-slot.filled {
+  background: var(--card);
+  border-style: solid;
+  border-color: var(--card);
+  box-shadow: var(--shadow-press);
+}
+.spell-slot.locked {
+  background: #ffe3c2;
+  border-style: solid;
+  border-color: var(--accent-2);
+  color: var(--accent);
+  cursor: default;
+}
+.spell-slot.selected {
+  border-color: var(--accent);
+  background: #fff4ec;
+  transform: translateY(-3px);
+}
+.spell-slot.correct {
+  background: #6cc070;
+  border-color: #6cc070;
+  color: white;
+  animation: cheer 0.5s ease;
+}
+.spell-slot.wrong {
+  background: #ef6b6b;
+  border-color: #ef6b6b;
+  color: white;
+}
+.letter-bank {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.letter-tile {
+  width: clamp(48px, 13vw, 64px);
+  height: clamp(48px, 13vw, 64px);
+  font-family: 'Baloo 2', sans-serif;
+  font-size: clamp(24px, 7vw, 34px);
+  font-weight: 800;
+  color: var(--ink);
+  background: var(--card);
+  border: none;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  animation: pop-in 0.2s ease;
+}
+.letter-tile:active {
+  transform: translateY(4px);
+  box-shadow: var(--shadow-press);
+}
+.letter-tile:disabled {
+  opacity: 0.5;
+}

@@ -1,7 +1,20 @@
 import { games } from '../games'
 import { getStars } from '../lib/storage'
+import type { SpellCategory } from '../games/spelling/types'
 
-export function Home({ onPick }: { onPick: (gameId: string) => void }) {
+const SPELL_CATEGORIES: SpellCategory[] = ['vocab', 'numbers', 'colors']
+
+function bestSpellStars(): number {
+  return Math.max(0, ...SPELL_CATEGORIES.map((c) => getStars(`spell:${c}`)))
+}
+
+type Props = {
+  onPick: (gameId: string) => void
+  onSpell: () => void
+}
+
+export function Home({ onPick, onSpell }: Props) {
+  const spellStars = bestSpellStars()
   return (
     <div className="home">
       <h1>เกมของหนู</h1>
@@ -16,6 +29,11 @@ export function Home({ onPick }: { onPick: (gameId: string) => void }) {
             </button>
           )
         })}
+        <button className="game-card" onClick={onSpell}>
+          <span className="game-icon">🔤</span>
+          <span className="game-title">สะกดคำ</span>
+          <span className="game-stars">{spellStars > 0 ? '⭐'.repeat(spellStars) : '☆☆☆'}</span>
+        </button>
       </div>
     </div>
   )
