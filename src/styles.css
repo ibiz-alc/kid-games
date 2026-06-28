@@ -1,7 +1,12 @@
 :root {
-  --bg: #fff8e1;
-  --accent: #ff7043;
-  font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+  --accent: #ff7a59;
+  --accent-2: #ffb443;
+  --ink: #4a3f55;
+  --card: #ffffff;
+  --shadow: 0 8px 0 rgba(99, 67, 80, 0.15);
+  --shadow-press: 0 3px 0 rgba(99, 67, 80, 0.15);
+  --radius: 28px;
+  font-family: 'Itim', 'Baloo 2', 'Comic Sans MS', sans-serif;
 }
 
 * {
@@ -10,7 +15,9 @@
 
 body {
   margin: 0;
-  background: var(--bg);
+  color: var(--ink);
+  background: linear-gradient(160deg, #fff3d6 0%, #ffe0e9 55%, #e3f0ff 100%);
+  background-attachment: fixed;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
@@ -20,136 +27,317 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 20px;
 }
 
 h1 {
-  font-size: clamp(28px, 6vw, 48px);
+  font-family: 'Baloo 2', 'Itim', sans-serif;
+  font-size: clamp(30px, 6vw, 52px);
   color: var(--accent);
   text-align: center;
+  margin: 0 0 24px;
+  text-shadow: 0 3px 0 rgba(255, 180, 67, 0.35);
 }
 
-/* Home */
+button {
+  font-family: inherit;
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cheer {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.18) rotate(-4deg);
+  }
+  70% {
+    transform: scale(1.08) rotate(3deg);
+  }
+}
+
+/* ---------- Home ---------- */
 .home {
   width: 100%;
-  max-width: 720px;
+  max-width: 760px;
   text-align: center;
+  animation: pop-in 0.3s ease;
 }
 .game-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 18px;
 }
 .game-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 24px;
+  gap: 6px;
+  padding: 26px 18px;
   border: none;
-  border-radius: 24px;
-  background: white;
-  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
   cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.game-card:hover {
+  transform: translateY(-4px);
 }
 .game-card:active {
-  transform: translateY(3px);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.12);
+  transform: translateY(4px);
+  box-shadow: var(--shadow-press);
 }
 .game-icon {
-  font-size: 56px;
+  font-size: 60px;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1));
 }
 .game-title {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 26px;
+  color: var(--ink);
 }
 .game-stars {
   font-size: 22px;
+  letter-spacing: 2px;
 }
 
-/* Quiz */
+/* ---------- Quiz ---------- */
 .quiz {
   width: 100%;
-  max-width: 640px;
+  max-width: 660px;
   text-align: center;
+  animation: pop-in 0.25s ease;
 }
-.progress {
-  font-size: 22px;
-  margin-bottom: 16px;
-  color: #666;
+.quiz-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
 }
-.prompt-number {
-  font-size: clamp(96px, 30vw, 200px);
-  font-weight: bold;
+.back-btn {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  font-size: 30px;
+  line-height: 1;
   color: var(--accent);
+  background: var(--card);
+  border: none;
+  border-radius: 50%;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+.back-btn:active {
+  transform: translateY(3px);
+}
+.progress-track {
+  flex: 1;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(99, 67, 80, 0.12);
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  transition: width 0.4s ease;
+}
+.progress-count {
+  flex: none;
+  font-size: 20px;
+  color: var(--ink);
+  min-width: 48px;
+}
+
+/* Prompts */
+.prompt-number {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: clamp(110px, 32vw, 220px);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+  text-shadow: 0 6px 0 rgba(255, 180, 67, 0.4);
+  animation: pop-in 0.3s ease;
 }
 .prompt-color {
-  width: clamp(160px, 50vw, 260px);
-  height: clamp(160px, 50vw, 260px);
+  width: clamp(170px, 52vw, 260px);
+  height: clamp(170px, 52vw, 260px);
   margin: 0 auto;
-  border-radius: 32px;
-  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-radius: 36px;
+  border: 8px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow);
+  animation: pop-in 0.3s ease;
 }
 .prompt-math {
-  font-size: clamp(56px, 16vw, 120px);
-  font-weight: bold;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: clamp(60px, 17vw, 130px);
+  font-weight: 800;
   color: var(--accent);
+  text-shadow: 0 5px 0 rgba(255, 180, 67, 0.4);
+  animation: pop-in 0.3s ease;
 }
+.prompt-picture {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 520px;
+  margin: 0 auto;
+  animation: pop-in 0.3s ease;
+}
+.prompt-picture-item {
+  font-size: clamp(40px, 11vw, 64px);
+  line-height: 1.1;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.12));
+}
+
+/* Choice buttons */
 .choices {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin-top: 32px;
+  margin-top: 34px;
 }
 .choice {
   padding: 28px 12px;
   font-size: 32px;
-  font-weight: bold;
+  color: var(--ink);
   border: none;
-  border-radius: 20px;
-  background: white;
-  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 22px;
+  background: var(--card);
+  box-shadow: var(--shadow);
   cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
 }
 .choice:active {
-  transform: translateY(3px);
+  transform: translateY(4px);
+  box-shadow: var(--shadow-press);
 }
 .choice.correct {
-  background: #66bb6a;
+  background: #6cc070;
   color: white;
+  animation: cheer 0.5s ease;
 }
 .choice.wrong {
-  background: #ef5350;
+  background: #ef6b6b;
   color: white;
 }
 
-/* Result */
+/* Word bank (game 4) */
+.wordbank {
+  margin-top: 28px;
+}
+.slot {
+  width: min(320px, 90%);
+  margin: 0 auto 24px;
+  padding: 20px 12px;
+  font-size: 38px;
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.65);
+  border: 4px dashed var(--accent-2);
+  border-radius: 22px;
+  min-height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slot.correct {
+  background: #6cc070;
+  color: white;
+  border-style: solid;
+  border-color: #6cc070;
+  animation: cheer 0.5s ease;
+}
+.slot.wrong {
+  background: #ef6b6b;
+  color: white;
+  border-style: solid;
+  border-color: #ef6b6b;
+}
+.word-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.word-tile {
+  padding: 18px 8px;
+  font-size: 24px;
+  color: var(--ink);
+  border: none;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.word-tile:active {
+  transform: translateY(4px);
+  box-shadow: var(--shadow-press);
+}
+.word-tile.picked {
+  background: var(--accent-2);
+  color: white;
+}
+.word-tile.correct {
+  background: #6cc070;
+  color: white;
+}
+.word-tile.wrong {
+  background: #ef6b6b;
+  color: white;
+}
+
+/* ---------- Result ---------- */
 .result {
   text-align: center;
+  animation: pop-in 0.3s ease;
 }
 .result-stars {
-  font-size: 72px;
+  font-size: 84px;
+  animation: cheer 0.6s ease;
 }
 .result-actions {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 24px;
+  margin-top: 28px;
+  width: min(320px, 90vw);
+  margin-inline: auto;
 }
 .btn-primary,
 .btn-secondary {
   padding: 20px;
   font-size: 26px;
-  font-weight: bold;
   border: none;
-  border-radius: 20px;
+  border-radius: 22px;
   cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.btn-primary:active,
+.btn-secondary:active {
+  transform: translateY(4px);
 }
 .btn-primary {
   background: var(--accent);
   color: white;
+  box-shadow: var(--shadow);
 }
 .btn-secondary {
-  background: white;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow);
 }
