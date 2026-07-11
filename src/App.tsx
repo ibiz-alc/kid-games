@@ -3,14 +3,18 @@ import { Home } from './components/Home'
 import { Result } from './components/Result'
 import { CategoryPicker } from './components/CategoryPicker'
 import { CategoryPickerK2 } from './components/CategoryPickerK2'
+import { Test13Menu } from './components/Test13Menu'
 import { QuizEngine } from './engine/QuizEngine'
 import { SpellEngine } from './engine/SpellEngine'
 import { K2Engine } from './engine/K2Engine'
+import { ShapeChooseEngine } from './engine/ShapeChooseEngine'
+import { ShapeSpellEngine } from './engine/ShapeSpellEngine'
 import { findGame } from './games'
-import { starsFor } from './engine/scoring'
+import { starsFor, starsForScore } from './engine/scoring'
 import { recordStars } from './lib/storage'
 import type { SpellCategory } from './games/spelling/types'
 import type { K2Category } from './games/k2/types'
+import type { Test13Mode } from './games/test13/content'
 
 type Screen =
   | { name: 'home' }
@@ -19,6 +23,8 @@ type Screen =
   | { name: 'spell'; category: SpellCategory }
   | { name: 'k2-category' }
   | { name: 'k2'; category: K2Category; seconds: number }
+  | { name: 'test13-menu' }
+  | { name: 'test13'; mode: Test13Mode }
   | { name: 'result'; stars: number; correct: number; total: number; replay: Screen }
 
 export default function App() {
@@ -32,6 +38,33 @@ export default function App() {
         onPick={(gameId) => setScreen({ name: 'play', gameId })}
         onSpell={() => setScreen({ name: 'category' })}
         onK2={() => setScreen({ name: 'k2-category' })}
+        onTest13={() => setScreen({ name: 'test13-menu' })}
+      />
+    )
+  }
+
+  if (screen.name === 'test13-menu') {
+    return (
+      <Test13Menu onPick={(mode) => setScreen({ name: 'test13', mode })} onExit={goHome} />
+    )
+  }
+
+  if (screen.name === 'test13') {
+    const mode = screen.mode
+    const replay: Screen = { name: 'test13', mode }
+    const finish = (correct: number, total: number) => {
+      const stars = starsForScore(correct, total)
+      recordStars(`test13:${mode}`, stars)
+      setScreen({ name: 'result', stars, correct, total, replay })
+    }
+    if (mode === 'choose') {
+      return <ShapeChooseEngine onFinish={finish} onExit={goHome} />
+    }
+    return (
+      <ShapeSpellEngine
+        promptMode={mode === 'listen' ? 'audio' : 'image'}
+        onFinish={finish}
+        onExit={goHome}
       />
     )
   }
@@ -56,7 +89,7 @@ export default function App() {
 
   if (screen.name === 'play') {
     const game = findGame(screen.gameId)
-    if (!game) return <Home onPick={() => {}} onSpell={goHome} onK2={goHome} />
+    if (!game) return <Home onPick={() => {}} onSpell={goHome} onK2={goHome} onTest13={goHome} />
     const replay: Screen = { name: 'play', gameId: screen.gameId }
     return (
       <QuizEngine

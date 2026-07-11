@@ -600,3 +600,18 @@ button {
 .choices-image .choice {
   padding: 18px 8px;
 }
+
+/* ---------- TEST@13Jul shapes ---------- */
+.shape-svg {
+  color: var(--accent);
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.18));
+  animation: pop-in 0.3s ease;
+}
+.shape-big {
+  width: clamp(150px, 46vw, 220px);
+  height: clamp(150px, 46vw, 220px);
+}
+.shape-choice {
+  width: clamp(56px, 16vw, 84px);
+  height: clamp(56px, 16vw, 84px);
+}

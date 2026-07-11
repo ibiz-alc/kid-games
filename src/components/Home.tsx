@@ -3,6 +3,7 @@ import { games } from '../games'
 import { getStars } from '../lib/storage'
 import type { SpellCategory } from '../games/spelling/types'
 import { K2_CATEGORIES } from '../games/k2/content'
+import { TEST13_MODES } from '../games/test13/content'
 import { getTheme, setTheme, toggleTheme, type Theme } from '../lib/theme'
 
 const SPELL_CATEGORIES: SpellCategory[] = ['vocab', 'numbers', 'colors']
@@ -15,15 +16,21 @@ function bestK2Stars(): number {
   return Math.max(0, ...K2_CATEGORIES.map((c) => getStars(`k2:${c.id}`)))
 }
 
+function bestTest13Stars(): number {
+  return Math.max(0, ...TEST13_MODES.map((m) => getStars(`test13:${m.id}`)))
+}
+
 type Props = {
   onPick: (gameId: string) => void
   onSpell: () => void
   onK2: () => void
+  onTest13: () => void
 }
 
-export function Home({ onPick, onSpell, onK2 }: Props) {
+export function Home({ onPick, onSpell, onK2, onTest13 }: Props) {
   const spellStars = bestSpellStars()
   const k2Stars = bestK2Stars()
+  const test13Stars = bestTest13Stars()
   const [theme, setThemeState] = useState<Theme>(() => getTheme())
 
   function flipTheme() {
@@ -64,6 +71,11 @@ export function Home({ onPick, onSpell, onK2 }: Props) {
           <span className="game-icon">🎓</span>
           <span className="game-title">K.2</span>
           <span className="game-stars">{k2Stars > 0 ? '⭐'.repeat(k2Stars) : '☆☆☆'}</span>
+        </button>
+        <button className="game-card" onClick={onTest13}>
+          <span className="game-icon">🧪</span>
+          <span className="game-title">TEST@13Jul</span>
+          <span className="game-stars">{test13Stars > 0 ? '⭐'.repeat(test13Stars) : '☆☆☆'}</span>
         </button>
       </div>
     </div>
