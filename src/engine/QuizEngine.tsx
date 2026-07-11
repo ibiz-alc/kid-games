@@ -4,6 +4,7 @@ import { PromptRenderer } from '../components/PromptRenderer'
 import { ChoiceButtons } from '../components/ChoiceButtons'
 import { WordBank } from '../components/WordBank'
 import { speak, playCorrect, playWrong } from '../lib/audio'
+import { createSequencer } from '../lib/sequencer'
 
 const QUESTIONS_PER_ROUND = 10
 const ADVANCE_DELAY_MS = 1200
@@ -17,7 +18,8 @@ type Props = {
 export function QuizEngine({ game, onFinish, onExit }: Props) {
   const [index, setIndex] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)
-  const [question, setQuestion] = useState<Question>(() => game.generateQuestion())
+  const [nextKey] = useState(() => createSequencer(game.itemKeys))
+  const [question, setQuestion] = useState<Question>(() => game.generateQuestion(nextKey()))
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [answered, setAnswered] = useState(false)
   const timeoutRef = useRef<number | null>(null)
@@ -49,7 +51,7 @@ export function QuizEngine({ game, onFinish, onExit }: Props) {
         onFinish(correctCount + (isCorrect ? 1 : 0), QUESTIONS_PER_ROUND)
       } else {
         setIndex(next)
-        setQuestion(game.generateQuestion())
+        setQuestion(game.generateQuestion(nextKey()))
         setSelectedId(null)
         setAnswered(false)
       }

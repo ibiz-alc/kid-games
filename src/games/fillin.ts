@@ -12,8 +12,9 @@ export const fillinGame: GameDefinition = {
   title: 'เติมคำ',
   icon: '🖼️',
   answerMode: 'wordbank',
-  generateQuestion() {
-    const count = randInt(1, 10)
+  itemKeys: NUMBER_WORDS.map((_, i) => String(i + 1)),
+  generateQuestion(key?: string) {
+    const count = key ? Number(key) : randInt(1, 10)
     const emoji = EMOJIS[randInt(0, EMOJIS.length - 1)]
     const correctWord = numberWord(count)
     const distractors = pickDistinct(NUMBER_WORDS, WORD_BANK_SIZE - 1, [correctWord])

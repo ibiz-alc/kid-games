@@ -6,8 +6,11 @@ export const colorsGame: GameDefinition = {
   id: 'colors',
   title: 'สีอะไร',
   icon: '🎨',
-  generateQuestion() {
-    const target = COLOR_PALETTE[randInt(0, COLOR_PALETTE.length - 1)]
+  itemKeys: COLOR_PALETTE.map((c) => c.name),
+  generateQuestion(key?: string) {
+    const target = key
+      ? COLOR_PALETTE.find((c) => c.name === key)!
+      : COLOR_PALETTE[randInt(0, COLOR_PALETTE.length - 1)]
     const names = COLOR_PALETTE.map((c) => c.name)
     const distractors = pickDistinct(names, 3, [target.name])
     const choices: Choice[] = shuffle([

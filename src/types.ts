@@ -18,7 +18,10 @@ export type GameDefinition = {
   id: string
   title: string
   icon: string
-  generateQuestion: () => Question
+  /** Stable keys for the shuffle-bag sequencer (one per possible question subject). */
+  itemKeys: string[]
+  /** Build a question; when a key is given, build that specific subject (else random). */
+  generateQuestion: (key?: string) => Question
   /** How the answer choices are presented. Defaults to 'buttons'. */
   answerMode?: AnswerMode
 }

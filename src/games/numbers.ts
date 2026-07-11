@@ -6,8 +6,9 @@ export const numbersGame: GameDefinition = {
   id: 'numbers',
   title: 'นับเลข',
   icon: '🔢',
-  generateQuestion() {
-    const value = randInt(1, 10)
+  itemKeys: NUMBER_WORDS.map((_, i) => String(i + 1)),
+  generateQuestion(key?: string) {
+    const value = key ? Number(key) : randInt(1, 10)
     const correctWord = numberWord(value)
     const distractors = pickDistinct(NUMBER_WORDS, 3, [correctWord])
     const choices: Choice[] = shuffle([

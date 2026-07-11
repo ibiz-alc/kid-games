@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import type { K2Category, K2Question, K2Choice } from '../games/k2/types'
-import { generateK2Question } from '../games/k2/generate'
+import { generateK2Question, k2Keys } from '../games/k2/generate'
 import { K2PromptView } from '../components/K2Prompt'
 import { K2Choices } from '../components/K2Choices'
 import { TimerBar } from '../components/TimerBar'
 import { speak, playCorrect, playWrong } from '../lib/audio'
+import { createSequencer } from '../lib/sequencer'
 
 const QUESTIONS_PER_ROUND = 10
 const ADVANCE_DELAY_MS = 1300
@@ -17,8 +18,11 @@ type Props = {
 }
 
 export function K2Engine({ category, seconds, onFinish, onExit }: Props) {
+  const [nextWord] = useState(() => createSequencer(k2Keys(category)))
   const [index, setIndex] = useState(0)
-  const [question, setQuestion] = useState<K2Question>(() => generateK2Question(category))
+  const [question, setQuestion] = useState<K2Question>(() =>
+    generateK2Question(category, nextWord()),
+  )
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [answered, setAnswered] = useState(false)
   const [remaining, setRemaining] = useState(seconds)
@@ -43,7 +47,7 @@ export function K2Engine({ category, seconds, onFinish, onExit }: Props) {
         onFinish(correctRef.current, QUESTIONS_PER_ROUND)
       } else {
         setIndex(next)
-        setQuestion(generateK2Question(category))
+        setQuestion(generateK2Question(category, nextWord()))
       }
     }, ADVANCE_DELAY_MS)
   }

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import type { SpellCategory, SpellQuestion, SlotState, LetterTile } from '../games/spelling/types'
-import { generateSpellQuestion } from '../games/spelling/generate'
+import { generateSpellQuestion, spellKeys } from '../games/spelling/generate'
 import { isComplete, isCorrect } from '../games/spelling/check'
+import { createSequencer } from '../lib/sequencer'
 import { SpellPromptView } from '../components/SpellPromptView'
 import { SlotRow } from '../components/SlotRow'
 import { LetterBank } from '../components/LetterBank'
@@ -26,10 +27,12 @@ function initSlots(q: SpellQuestion): SlotState {
 }
 
 export function SpellEngine({ category, onFinish, onExit }: Props) {
+  const [nextWord] = useState(() => createSequencer(spellKeys(category)))
   const [index, setIndex] = useState(0)
-  const [question, setQuestion] = useState<SpellQuestion>(() => generateSpellQuestion(category))
+  const [question, setQuestion] = useState<SpellQuestion>(() =>
+    generateSpellQuestion(category, nextWord()),
+  )
   const [slots, setSlots] = useState<SlotState>(() => initSlots(question))
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [status, setStatus] = useState<Status>('playing')
 
   const correctRef = useRef(0)
@@ -51,17 +54,24 @@ export function SpellEngine({ category, onFinish, onExit }: Props) {
     return current.findIndex((s, i) => s === null && i !== question.revealedIndex)
   }
 
+  /** Slot for this letter: its correct empty position if any, else the first empty slot. */
+  function slotForLetter(current: SlotState, letter: string): number {
+    const matching = current.findIndex(
+      (s, i) => s === null && i !== question.revealedIndex && question.target[i] === letter,
+    )
+    return matching >= 0 ? matching : firstEmptyNonLocked(current)
+  }
+
   function goNext() {
     const next = index + 1
     if (next >= WORDS_PER_ROUND) {
       onFinish(correctRef.current, WORDS_PER_ROUND)
       return
     }
-    const q = generateSpellQuestion(category)
+    const q = generateSpellQuestion(category, nextWord())
     setIndex(next)
     setQuestion(q)
     setSlots(initSlots(q))
-    setSelectedIndex(null)
     failedRef.current = false
     setStatus('playing')
   }
@@ -79,7 +89,6 @@ export function SpellEngine({ category, onFinish, onExit }: Props) {
       failedRef.current = true
       timeoutRef.current = window.setTimeout(() => {
         setSlots(initSlots(question))
-        setSelectedIndex(null)
         setStatus('playing')
       }, WRONG_DELAY_MS)
     }
@@ -87,32 +96,23 @@ export function SpellEngine({ category, onFinish, onExit }: Props) {
 
   function handleSlotTap(i: number) {
     if (status !== 'playing' || i === question.revealedIndex) return
+    // tapping a filled slot returns its letter to the bank
     if (slots[i]) {
-      // return the placed tile to the bank
       const next = [...slots]
       next[i] = null
       setSlots(next)
-      setSelectedIndex(i)
-    } else {
-      setSelectedIndex(i)
     }
   }
 
   function handleTileTap(tile: LetterTile) {
     if (status !== 'playing') return
-    let target = selectedIndex
-    if (target === null || slots[target] !== null || target === question.revealedIndex) {
-      target = firstEmptyNonLocked(slots)
-    }
+    const target = slotForLetter(slots, tile.letter)
     if (target < 0) return
     const next = [...slots]
     next[target] = tile
     setSlots(next)
-    setSelectedIndex(null)
     if (isComplete(next)) evaluate(next)
   }
-
-  const progressPct = ((index + (status === 'correct' ? 1 : 0)) / WORDS_PER_ROUND) * 100
 
   return (
     <div className="quiz">
@@ -121,7 +121,10 @@ export function SpellEngine({ category, onFinish, onExit }: Props) {
           ←
         </button>
         <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${progressPct}%` }} />
+          <div
+            className="progress-fill"
+            style={{ width: `${((index + (status === 'correct' ? 1 : 0)) / WORDS_PER_ROUND) * 100}%` }}
+          />
         </div>
         <div className="progress-count">
           {index + 1}/{WORDS_PER_ROUND}
@@ -133,7 +136,7 @@ export function SpellEngine({ category, onFinish, onExit }: Props) {
       <SlotRow
         slots={slots}
         revealedIndex={question.revealedIndex}
-        selectedIndex={selectedIndex}
+        selectedIndex={null}
         status={status}
         onSlotTap={handleSlotTap}
       />

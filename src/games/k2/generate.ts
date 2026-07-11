@@ -8,9 +8,15 @@ function visualOf(item: K2Item): K2Visual | null {
   return null
 }
 
-export function generateK2Question(category: K2Category): K2Question {
+export function k2Keys(category: K2Category): string[] {
+  return K2_CONTENT[category].map((i) => i.word)
+}
+
+export function generateK2Question(category: K2Category, correctWord?: string): K2Question {
   const items = K2_CONTENT[category]
-  const correct = items[randInt(0, items.length - 1)]
+  const correct = correctWord
+    ? items.find((i) => i.word === correctWord)!
+    : items[randInt(0, items.length - 1)]
   const distractors = pickDistinct(items, 3, [correct])
   const pool = [correct, ...distractors]
 
