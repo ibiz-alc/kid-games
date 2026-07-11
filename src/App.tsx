@@ -2,18 +2,23 @@ import { useState } from 'react'
 import { Home } from './components/Home'
 import { Result } from './components/Result'
 import { CategoryPicker } from './components/CategoryPicker'
+import { CategoryPickerK2 } from './components/CategoryPickerK2'
 import { QuizEngine } from './engine/QuizEngine'
 import { SpellEngine } from './engine/SpellEngine'
+import { K2Engine } from './engine/K2Engine'
 import { findGame } from './games'
 import { starsFor } from './engine/scoring'
 import { recordStars } from './lib/storage'
 import type { SpellCategory } from './games/spelling/types'
+import type { K2Category } from './games/k2/types'
 
 type Screen =
   | { name: 'home' }
   | { name: 'play'; gameId: string }
   | { name: 'category' }
   | { name: 'spell'; category: SpellCategory }
+  | { name: 'k2-category' }
+  | { name: 'k2'; category: K2Category; seconds: number }
   | { name: 'result'; stars: number; correct: number; total: number; replay: Screen }
 
 export default function App() {
@@ -26,6 +31,7 @@ export default function App() {
       <Home
         onPick={(gameId) => setScreen({ name: 'play', gameId })}
         onSpell={() => setScreen({ name: 'category' })}
+        onK2={() => setScreen({ name: 'k2-category' })}
       />
     )
   }
@@ -39,9 +45,18 @@ export default function App() {
     )
   }
 
+  if (screen.name === 'k2-category') {
+    return (
+      <CategoryPickerK2
+        onPick={(category, seconds) => setScreen({ name: 'k2', category, seconds })}
+        onExit={goHome}
+      />
+    )
+  }
+
   if (screen.name === 'play') {
     const game = findGame(screen.gameId)
-    if (!game) return <Home onPick={() => {}} onSpell={() => setScreen({ name: 'category' })} />
+    if (!game) return <Home onPick={() => {}} onSpell={goHome} onK2={goHome} />
     const replay: Screen = { name: 'play', gameId: screen.gameId }
     return (
       <QuizEngine
@@ -65,6 +80,23 @@ export default function App() {
         onFinish={(correct, total) => {
           const stars = starsFor(correct)
           recordStars(`spell:${category}`, stars)
+          setScreen({ name: 'result', stars, correct, total, replay })
+        }}
+        onExit={goHome}
+      />
+    )
+  }
+
+  if (screen.name === 'k2') {
+    const { category, seconds } = screen
+    const replay: Screen = { name: 'k2', category, seconds }
+    return (
+      <K2Engine
+        category={category}
+        seconds={seconds}
+        onFinish={(correct, total) => {
+          const stars = starsFor(correct)
+          recordStars(`k2:${category}`, stars)
           setScreen({ name: 'result', stars, correct, total, replay })
         }}
         onExit={goHome}

@@ -1,6 +1,7 @@
 import { games } from '../games'
 import { getStars } from '../lib/storage'
 import type { SpellCategory } from '../games/spelling/types'
+import { K2_CATEGORIES } from '../games/k2/content'
 
 const SPELL_CATEGORIES: SpellCategory[] = ['vocab', 'numbers', 'colors']
 
@@ -8,13 +9,19 @@ function bestSpellStars(): number {
   return Math.max(0, ...SPELL_CATEGORIES.map((c) => getStars(`spell:${c}`)))
 }
 
+function bestK2Stars(): number {
+  return Math.max(0, ...K2_CATEGORIES.map((c) => getStars(`k2:${c.id}`)))
+}
+
 type Props = {
   onPick: (gameId: string) => void
   onSpell: () => void
+  onK2: () => void
 }
 
-export function Home({ onPick, onSpell }: Props) {
+export function Home({ onPick, onSpell, onK2 }: Props) {
   const spellStars = bestSpellStars()
+  const k2Stars = bestK2Stars()
   return (
     <div className="home">
       <h1>เกมของหนู</h1>
@@ -33,6 +40,11 @@ export function Home({ onPick, onSpell }: Props) {
           <span className="game-icon">🔤</span>
           <span className="game-title">สะกดคำ</span>
           <span className="game-stars">{spellStars > 0 ? '⭐'.repeat(spellStars) : '☆☆☆'}</span>
+        </button>
+        <button className="game-card" onClick={onK2}>
+          <span className="game-icon">🎓</span>
+          <span className="game-title">K.2</span>
+          <span className="game-stars">{k2Stars > 0 ? '⭐'.repeat(k2Stars) : '☆☆☆'}</span>
         </button>
       </div>
     </div>
