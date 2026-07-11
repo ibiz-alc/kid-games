@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { getStars, recordStars } from './storage'
+import { getStars, recordStars, getSetting, setSetting } from './storage'
 
 describe('storage', () => {
   beforeEach(() => {
@@ -26,5 +26,25 @@ describe('storage', () => {
     recordStars('colors', 1)
     expect(getStars('numbers')).toBe(3)
     expect(getStars('colors')).toBe(1)
+  })
+})
+
+describe('settings', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('returns the fallback when unset', () => {
+    expect(getSetting('k2-seconds', 15)).toBe(15)
+  })
+
+  it('writes and reads back a value', () => {
+    setSetting('k2-seconds', 20)
+    expect(getSetting('k2-seconds', 15)).toBe(20)
+  })
+
+  it('returns the fallback for a non-numeric stored value', () => {
+    localStorage.setItem('kid-games:setting:k2-seconds', 'oops')
+    expect(getSetting('k2-seconds', 15)).toBe(15)
   })
 })

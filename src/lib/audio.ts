@@ -1,8 +1,15 @@
-export function speak(text: string): void {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+export function speak(text: string, onEnd?: () => void): void {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    onEnd?.()
+    return
+  }
   const utterance = new SpeechSynthesisUtterance(text)
   utterance.lang = 'en-US'
   utterance.rate = 0.9
+  if (onEnd) {
+    utterance.onend = () => onEnd()
+    utterance.onerror = () => onEnd()
+  }
   window.speechSynthesis.cancel()
   window.speechSynthesis.speak(utterance)
 }
