@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { games } from '../games'
 import { getStars } from '../lib/storage'
 import type { SpellCategory } from '../games/spelling/types'
 import { K2_CATEGORIES } from '../games/k2/content'
+import { getTheme, setTheme, toggleTheme, type Theme } from '../lib/theme'
 
 const SPELL_CATEGORIES: SpellCategory[] = ['vocab', 'numbers', 'colors']
 
@@ -22,9 +24,26 @@ type Props = {
 export function Home({ onPick, onSpell, onK2 }: Props) {
   const spellStars = bestSpellStars()
   const k2Stars = bestK2Stars()
+  const [theme, setThemeState] = useState<Theme>(() => getTheme())
+
+  function flipTheme() {
+    const next = toggleTheme(theme)
+    setTheme(next)
+    setThemeState(next)
+  }
+
   return (
     <div className="home">
-      <h1>เกมของหนู</h1>
+      <div className="home-header">
+        <h1>เกมของหนู</h1>
+        <button
+          className="theme-toggle"
+          onClick={flipTheme}
+          aria-label={theme === 'light' ? 'เปลี่ยนเป็นธีมมืด' : 'เปลี่ยนเป็นธีมสว่าง'}
+        >
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
+      </div>
       <div className="game-cards">
         {games.map((g) => {
           const stars = getStars(g.id)

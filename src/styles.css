@@ -1,12 +1,32 @@
-:root {
+:root,
+:root[data-theme='light'] {
   --accent: #ff7a59;
   --accent-2: #ffb443;
   --ink: #4a3f55;
+  --muted: #7a6b80;
   --card: #ffffff;
+  --panel: rgba(255, 255, 255, 0.65);
+  --swatch-border: rgba(0, 0, 0, 0.14);
   --shadow: 0 8px 0 rgba(99, 67, 80, 0.15);
   --shadow-press: 0 3px 0 rgba(99, 67, 80, 0.15);
+  --bg: linear-gradient(160deg, #fff3d6 0%, #ffe0e9 55%, #e3f0ff 100%);
   --radius: 28px;
+  color-scheme: light;
   font-family: 'Itim', 'Baloo 2', 'Comic Sans MS', sans-serif;
+}
+
+:root[data-theme='dark'] {
+  --accent: #ff8a6b;
+  --accent-2: #ffc36b;
+  --ink: #f1ecf6;
+  --muted: #b7acc4;
+  --card: #322a48;
+  --panel: rgba(255, 255, 255, 0.1);
+  --swatch-border: rgba(255, 255, 255, 0.4);
+  --shadow: 0 8px 0 rgba(0, 0, 0, 0.45);
+  --shadow-press: 0 3px 0 rgba(0, 0, 0, 0.45);
+  --bg: linear-gradient(160deg, #241d38 0%, #2a2140 55%, #1d2540 100%);
+  color-scheme: dark;
 }
 
 * {
@@ -16,8 +36,9 @@
 body {
   margin: 0;
   color: var(--ink);
-  background: linear-gradient(160deg, #fff3d6 0%, #ffe0e9 55%, #e3f0ff 100%);
+  background: var(--bg);
   background-attachment: fixed;
+  transition: background 0.3s ease, color 0.3s ease;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
@@ -73,6 +94,28 @@ button {
   max-width: 760px;
   text-align: center;
   animation: pop-in 0.3s ease;
+}
+.home-header {
+  position: relative;
+}
+.theme-toggle {
+  position: absolute;
+  top: -4px;
+  right: 0;
+  width: 52px;
+  height: 52px;
+  font-size: 26px;
+  line-height: 1;
+  border: none;
+  border-radius: 50%;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+.theme-toggle:active {
+  transform: translateY(3px);
+  box-shadow: var(--shadow-press);
 }
 .game-cards {
   display: grid;
@@ -145,7 +188,7 @@ button {
 .progress-track {
   flex: 1;
   height: 18px;
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--panel);
   border-radius: 999px;
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(99, 67, 80, 0.12);
@@ -178,7 +221,7 @@ button {
   height: clamp(170px, 52vw, 260px);
   margin: 0 auto;
   border-radius: 36px;
-  border: 8px solid rgba(255, 255, 255, 0.9);
+  border: 8px solid var(--swatch-border);
   box-shadow: var(--shadow);
   animation: pop-in 0.3s ease;
 }
@@ -247,7 +290,7 @@ button {
   padding: 20px 12px;
   font-size: 38px;
   color: var(--accent);
-  background: rgba(255, 255, 255, 0.65);
+  background: var(--panel);
   border: 4px dashed var(--accent-2);
   border-radius: 22px;
   min-height: 84px;
@@ -368,7 +411,7 @@ button {
   font-size: clamp(28px, 8vw, 40px);
   font-weight: 800;
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--panel);
   border: 4px dashed var(--accent-2);
   border-radius: 16px;
   cursor: pointer;
@@ -476,7 +519,7 @@ button {
 .timer-track {
   flex: 1;
   height: 14px;
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--panel);
   border-radius: 999px;
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(99, 67, 80, 0.12);
@@ -520,7 +563,7 @@ button {
 .k2-swatch {
   display: inline-block;
   border-radius: 28px;
-  border: 6px solid rgba(255, 255, 255, 0.9);
+  border: 6px solid var(--swatch-border);
   box-shadow: var(--shadow);
 }
 .k2-swatch-big {
@@ -551,7 +594,7 @@ button {
 }
 .k2-listen-hint {
   font-size: 20px;
-  color: #7a6b80;
+  color: var(--muted);
   margin: 0;
 }
 .choices-image .choice {
