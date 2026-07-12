@@ -94,11 +94,13 @@ export function ShapeSpellEngine({ promptMode, ordered = false, onFinish, onExit
 
   function handleSlotTap(i: number) {
     if (status !== 'playing') return
-    if (slots[i]) {
-      const next = [...slots]
-      next[i] = null
-      setSlots(next)
-    }
+    const tile = slots[i]
+    if (!tile) return
+    // once a letter sits in its correct position it locks and can't be removed
+    if (question.word[i] === tile.letter) return
+    const next = [...slots]
+    next[i] = null
+    setSlots(next)
   }
 
   function handleTileTap(tile: LetterTile) {
