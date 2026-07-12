@@ -18,6 +18,8 @@ type Status = 'playing' | 'correct' | 'wrong'
 
 type Props = {
   promptMode: 'image' | 'audio'
+  /** When true, letters must be filled left-to-right in order (only the next letter is accepted). */
+  ordered?: boolean
   onFinish: (correct: number, total: number) => void
   onExit: () => void
 }
@@ -28,7 +30,7 @@ function makeQuestion(word: ShapeName): Q {
   return { word, bank: letterBankFor(word) }
 }
 
-export function ShapeSpellEngine({ promptMode, onFinish, onExit }: Props) {
+export function ShapeSpellEngine({ promptMode, ordered = false, onFinish, onExit }: Props) {
   const [nextShape] = useState(() => createSequencer<ShapeName>([...TEST13_SHAPES]))
   const [index, setIndex] = useState(0)
   const [question, setQuestion] = useState<Q>(() => makeQuestion(nextShape()))
@@ -101,7 +103,19 @@ export function ShapeSpellEngine({ promptMode, onFinish, onExit }: Props) {
 
   function handleTileTap(tile: LetterTile) {
     if (status !== 'playing') return
-    const target = slotForLetter(slots, tile.letter)
+    let target: number
+    if (ordered) {
+      // only the next (leftmost empty) slot may be filled, and only by its correct letter
+      const activeIndex = slots.findIndex((s) => s === null)
+      if (activeIndex < 0) return
+      if (question.word[activeIndex] !== tile.letter) {
+        playWrong()
+        return
+      }
+      target = activeIndex
+    } else {
+      target = slotForLetter(slots, tile.letter)
+    }
     if (target < 0) return
     const next = [...slots]
     next[target] = tile

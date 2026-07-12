@@ -63,6 +63,7 @@ export default function App() {
     return (
       <ShapeSpellEngine
         promptMode={mode === 'listen' ? 'audio' : 'image'}
+        ordered={mode === 'order'}
         onFinish={finish}
         onExit={goHome}
       />
